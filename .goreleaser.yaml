@@ -1,0 +1,34 @@
+# Builds the release docs/PLUGINS.md (jaira repository) asks for:
+#   jaira-<id>_<os>_<arch>[.exe] for linux, darwin, windows x amd64, arm64,
+#   checksums.txt beside them, and jaira-plugin.json as an asset.
+# <id> comes from jaira-plugin.json: the release workflow exports it as
+# PLUGIN_ID, so the manifest is the only place the id is written.
+# Local dry run: PLUGIN_ID=$(jq -r .id jaira-plugin.json) goreleaser release --snapshot --clean
+version: 2
+
+project_name: jaira-plugin
+
+builds:
+  - id: plugin
+    binary: "jaira-{{ .Env.PLUGIN_ID }}"
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags: ["-s -w"]
+
+archives:
+  - formats: [binary]
+    # goreleaser adds .exe on Windows by itself.
+    name_template: "jaira-{{ .Env.PLUGIN_ID }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+release:
+  extra_files:
+    - glob: ./jaira-plugin.json
+
+changelog:
+  use: github

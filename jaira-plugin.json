@@ -1,0 +1,13 @@
+{
+  "id": "hello",
+  "name": "Hello",
+  "version": "0.1.0",
+  "minJairaVersion": "0.5.10",
+  "commands": [
+    {
+      "name": "greet",
+      "summary": "count the board's tickets, or leave a hello note on one ticket"
+    }
+  ],
+  "capabilities": ["read", "write"]
+}

@@ -1,0 +1,38 @@
+name: release
+
+# git tag v0.1.0 && git push --tags
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Tag matches the manifest
+        run: |
+          want="v$(jq -r .version jaira-plugin.json)"
+          if [ "$GITHUB_REF_NAME" != "$want" ]; then
+            echo "::error::tag $GITHUB_REF_NAME, but jaira-plugin.json says version $want - change one of them and tag again"
+            exit 1
+          fi
+          echo "PLUGIN_ID=$(jq -r .id jaira-plugin.json)" >> "$GITHUB_ENV"
+
+      - run: go test ./...
+
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
