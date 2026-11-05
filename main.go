@@ -66,9 +66,6 @@ func run(args []string, stdout, stderr io.Writer) int {
 		// Always JSON; --json is accepted because that is how jaira asks.
 		stdout.Write(manifestJSON)
 		return exitOK
-	case "version", "--version":
-		fmt.Fprintln(stdout, m.Version)
-		return exitOK
 	case "-h", "--help", "help":
 		usage(stdout, m)
 		return exitOK
