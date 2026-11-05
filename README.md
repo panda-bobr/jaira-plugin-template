@@ -16,7 +16,12 @@ Press **Use this template** (do not fork), clone your new repository, then
 edit `jaira-plugin.json`:
 
 - `id` — lower-case letters, digits and dashes, without `jaira` in it. The
-  program becomes `jaira-<id>`; nothing else in the repository names the id.
+  program becomes `jaira-<id>`. The build reads the id from this file only
+  (`.goreleaser.yaml`, `release.yml`); the example's id `hello` is still
+  written by hand in prose, so change it there too:
+  - `README.md` — the intro, the catalogue entry under step 3 (`id`, `repo`)
+    and the section on `jaira-hello`
+  - `main.go` — the header comment
 - `name`, `commands`, `capabilities` — what a person reads before installing.
 - `version` — `0.1.0` to start; `minJairaVersion` — the oldest jaira you
   tested with.
@@ -40,8 +45,8 @@ The `release` workflow checks that the tag is `v` + `version` from
 
 - `jaira-<id>_<os>_<arch>` for `linux`, `darwin`, `windows` (`.exe`) ×
   `amd64`, `arm64`
-- `checksums.txt`
 - `jaira-plugin.json`
+- `checksums.txt`, covering every binary and `jaira-plugin.json`
 
 Every later release is the same two steps: raise `version`, tag `v<version>`.
 An update needs no new pull request to the catalogue.
